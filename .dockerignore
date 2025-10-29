@@ -1,0 +1,55 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation (don't need in image)
+*.md
+docs/
+README.md
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test results
+tmp/
+test-results/
+coverage/
+*.log
+
+# Ruby
+*.gem
+*.rbc
+.bundle
+vendor/bundle/
+.ruby-version
+.ruby-gemset
+
+# RSpec
+.rspec_status
+spec/examples.txt
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Local development
+.env
+.env.local
+*.local
+
+# Temporary files
+*.tmp
+*.temp
+*.cache

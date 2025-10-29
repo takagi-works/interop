@@ -1,0 +1,41 @@
+GIT
+  remote: https://github.com/takagi-works/takagi.git
+  revision: d77d4c6f4357a387076fb89f6b9ae00d14c93df1
+  branch: master
+  specs:
+    takagi (1.0.0)
+      rack
+      zeitwerk
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    diff-lcs (1.6.2)
+    json (2.15.2)
+    rack (3.2.3)
+    rspec (3.13.2)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.6)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.6)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-support (3.13.6)
+    zeitwerk (2.6.18)
+
+PLATFORMS
+  ruby
+  x86_64-linux
+
+DEPENDENCIES
+  json
+  rspec (~> 3.12)
+  takagi!
+
+BUNDLED WITH
+   2.6.6

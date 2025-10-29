@@ -1,0 +1,105 @@
+# Docker Compose for Takagi CoAP Interoperability Tests
+# Provides easy orchestration for local development and testing
+
+version: '3.8'
+
+services:
+  # Main test runner
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: takagi-interop-tests
+    environment:
+      - COAP_PORT=5683
+      - COAP_CLIENTS=libcoap,aiocoap,node-coap
+      - VERBOSE=0
+    volumes:
+      - ./spec:/app/spec
+      - ./takagi_app:/app/takagi_app
+      - ./test-results:/app/tmp
+    ports:
+      - "5683:5683/udp"
+      - "5683:5683/tcp"
+    command: bundle exec rspec --format documentation
+
+  # Takagi server only (for manual testing)
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: takagi-server
+    environment:
+      - COAP_PORT=5683
+    volumes:
+      - ./takagi_app:/app/takagi_app
+    ports:
+      - "5683:5683/udp"
+      - "5683:5683/tcp"
+    command: ruby takagi_app/server.rb
+
+  # Interactive development container
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: takagi-dev
+    environment:
+      - COAP_PORT=5683
+    volumes:
+      - .:/app
+    ports:
+      - "5683:5683/udp"
+      - "5683:5683/tcp"
+    stdin_open: true
+    tty: true
+    command: bash
+
+  # Multi-client testing scenarios
+
+  # Test with libcoap only
+  test-libcoap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - COAP_CLIENTS=libcoap
+    command: bundle exec rspec --format documentation
+
+  # Test with aiocoap only
+  test-aiocoap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - COAP_CLIENTS=aiocoap
+    command: bundle exec rspec --format documentation
+
+  # Test with node-coap only
+  test-node-coap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - COAP_CLIENTS=node-coap
+    command: bundle exec rspec --format documentation
+
+  # CI/CD simulation - verbose output
+  ci:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - COAP_CLIENTS=libcoap,aiocoap,node-coap
+      - VERBOSE=1
+    command: bundle exec rspec --format documentation --format json --out /app/tmp/rspec-results.json
+
+# Named volumes for persistence
+volumes:
+  test-results:
+    driver: local
+
+# Networks (optional, for multi-node testing in future)
+networks:
+  default:
+    name: coap-network
