@@ -112,7 +112,7 @@ class LibCoAPClient
       payload = payload.gsub(/^['"]|['"]$/, '') if payload
 
       # Extract Content-Format option from anywhere in output
-      content_format = output[/Content-Format:(\d+)/, 1]&.to_i
+      content_format = output[/Content-Format:([a-z]+\/[a-z]+|\d+)/, 1]
 
       Response.new(
         code: code,

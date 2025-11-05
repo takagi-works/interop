@@ -1,5 +1,8 @@
 require 'spec_helper'
 
+# CoAP Client Command:
+# coap-client-gnutls -v 9 -m get coap://localhost:5683/temperature
+
 RSpec.describe "RFC 7252 - Basic GET Request" do
 
   CoAPClients.each do |client_name, client|
@@ -16,12 +19,9 @@ RSpec.describe "RFC 7252 - Basic GET Request" do
           expect(response.payload).to include_json(temp: 22.5, unit: 'celsius')
         end
 
-        # TODO: Investigate why coap-client-gnutls doesn't show Content-Format in output
-        # coap-client-gnutls -v 9 shows options in [ ] but they appear empty
-        # even though Takagi's json helper should set Content-Format:50
-        xit "includes Content-Format option for JSON (50)" do
+        it "includes Content-Format option for JSON (50)" do
           response = client.get('/temperature')
-          expect(response.content_format).to eq(50)
+          expect(response.content_format).to eq("application/json")
         end
 
         it "returns successful status" do

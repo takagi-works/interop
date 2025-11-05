@@ -5,6 +5,24 @@ class InteropTestServer < Takagi::Base
   get '/temperature' do
     json temp: 22.5, unit: 'celsius'
   end
+
+  # POST endpoint for creating resources
+  post '/data' do
+    received = request.payload
+    created status: 'created', received: received, id: 123
+  end
+
+  # PUT endpoint for updating resources
+  put '/settings' do
+    received = request.payload
+    changed status: 'updated', received: received
+  end
+
+  # DELETE endpoint for removing resources
+  delete '/resource/:id' do
+    id = params[:id]
+    deleted status: 'deleted', id: id
+  end
 end
 
 # Start server when run directly
