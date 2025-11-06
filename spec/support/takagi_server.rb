@@ -17,7 +17,7 @@ module TakagiServerHelper
       end
 
       begin
-        InteropTestServer.run!(port: @server_port)
+        InteropTestServer.run!(port: @server_port, protocols: [:udp, :tcp])
       rescue => e
         puts "Server error: #{e.message}" if ENV['VERBOSE']
         exit 1

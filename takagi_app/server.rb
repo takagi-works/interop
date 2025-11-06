@@ -30,5 +30,5 @@ if __FILE__ == $0
   port = ENV.fetch('COAP_PORT', 5683).to_i
   puts "Starting Takagi interop test server on port #{port}..."
   puts "Test endpoint: coap://localhost:#{port}/temperature"
-  InteropTestServer.run!(port: port)
+  InteropTestServer.run!(port: port, protocols: [:udp, :tcp])
 end

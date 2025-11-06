@@ -143,10 +143,67 @@ class LibCoAPClient
   end
 end
 
-# Registry of available clients
+class LibCoAPTcpClient < LibCoAPClient
+  def get(path, options = {})
+    cmd = "coap-client-gnutls -v 9 -m get coap+tcp://#{server_address}#{path}"
+    puts "Executing: #{cmd}" if ENV['VERBOSE']
+
+    output = execute_command(cmd)
+    parse_output(output)
+  end
+
+  def post(path, payload, options = {})
+    cmd = "coap-client-gnutls -v 9 -m post coap+tcp://#{server_address}#{path} -e '#{payload}'"
+    puts "Executing: #{cmd}" if ENV['VERBOSE']
+
+    output = execute_command(cmd)
+    parse_output(output)
+  end
+
+  def put(path, payload, options = {})
+    cmd = "coap-client-gnutls -v 9 -m put coap+tcp://#{server_address}#{path} -e '#{payload}'"
+    output = execute_command(cmd)
+    parse_output(output)
+  end
+
+  def delete(path, options = {})
+    cmd = "coap-client-gnutls -v 9 -m delete coap+tcp://#{server_address}#{path}"
+    output = execute_command(cmd)
+    parse_output(output)
+  end
+
+  def observe(path, duration: 5)
+    cmd = "timeout #{duration}s coap-client-gnutls -v 9 -m get coap+tcp://#{server_address}#{path} -s #{duration} -O 6,0"
+    output = execute_command(cmd)
+    parse_observe_output(output)
+  end
+end
+
+# Registry of available UDP clients
 module CoAPClients
   CLIENTS = {
     'libcoap' => LibCoAPClient.new
+  }
+
+  def self.each(&block)
+    # Filter by environment variable if set
+    active_clients = ENV['COAP_CLIENTS']&.split(',') || CLIENTS.keys
+
+    active_clients.each do |name|
+      next unless CLIENTS[name]
+      block.call(name, CLIENTS[name])
+    end
+  end
+
+  def self.[](name)
+    CLIENTS[name]
+  end
+end
+
+# Registry of available TCP clients
+module CoAPTcpClients
+  CLIENTS = {
+    'libcoap' => LibCoAPTcpClient.new
   }
 
   def self.each(&block)
