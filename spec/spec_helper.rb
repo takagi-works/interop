@@ -65,6 +65,7 @@ end
 RSpec::Matchers.define :include_json do |expected|
   match do |actual|
     begin
+      return false if actual.nil? || actual.empty?
       json = JSON.parse(actual)
       expected.all? { |key, value| json[key.to_s] == value }
     rescue JSON::ParserError

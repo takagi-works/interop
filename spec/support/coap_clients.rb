@@ -82,13 +82,16 @@ class LibCoAPClient
   def parse_output(output)
     # libcoap format with -v 9 verbosity:
     # Debug lines followed by response line like:
-    # v:1 t:ACK c:2.05 i:xxxx {token} [ options ] :: payload
-    # or sometimes just: v:1 t:ACK c:2.05 ...
+    # UDP: v:1 t:ACK c:2.05 i:xxxx {token} [ options ] :: payload
+    # TCP: v:Reliable c:2.01 {token} [ options ] :: payload
 
-    # Find the response line (contains both "t:ACK" or "t:CON" and "c:")
+    # Find the response line - try UDP format first, then TCP format
     response_line = output.lines.find { |line| line =~ /v:1.*t:(ACK|CON).*c:\d\.\d+/ }
 
-    # If no response line found, try finding any line with just the code
+    # Try TCP/Reliable format
+    response_line ||= output.lines.find { |line| line =~ /v:Reliable.*c:\d\.\d+/ }
+
+    # If no response line found, try finding any line with just the code (fallback)
     response_line ||= output.lines.find { |line| line =~ /c:(\d\.\d+)/ }
 
     if response_line
